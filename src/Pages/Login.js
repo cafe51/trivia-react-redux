@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import logo from '../trivia.png';
 
 const MINIMUN_LENTGH = 3;
