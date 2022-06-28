@@ -1,5 +1,5 @@
 // Esse reducer será responsável por tratar as informações da pessoa usuária
-import { LOG_IN_SUCCES } from '../actions';
+import { LOG_IN_SUCCESS } from '../actions';
 
 const INITIAL_STATE = {
   email: '',
@@ -10,7 +10,7 @@ const INITIAL_STATE = {
 // Lembrando que ele pode ficar em outro arquivo também;
 const loginReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-  case LOG_IN_SUCCES:
+  case LOG_IN_SUCCESS:
     return {
       ...state,
       email: action.payload.email,
