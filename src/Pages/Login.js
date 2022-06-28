@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import logo from '../trivia.png';
+import { logInSucces } from '../Redux/actions';
 
 const MINIMUN_LENTGH = 3;
 
@@ -29,7 +31,9 @@ class Login extends React.Component {
     const tokenResponse = await fetch('https://opentdb.com/api_token.php?command=request');
     const { token } = await tokenResponse.json();
     localStorage.setItem('token', token);
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
+    const { name, email } = this.state;
+    dispatch(logInSucces({ name, email }));
     history.push('/game');
   }
 
@@ -88,4 +92,4 @@ Login.propTypes = {
   history: PropTypes.objectOf(PropTypes.any),
 }.isRequired;
 
-export default Login;
+export default connect()(Login);

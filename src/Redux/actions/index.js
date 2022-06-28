@@ -1,11 +1,8 @@
-export const LOG_IN_SUCCES = 'LOG_IN_SUCCES';
+export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 
 export function logInSucces(userData) {
   return {
-    type: LOG_IN_SUCCES,
-    payload: {
-      email: userData.email,
-      name: userData.name,
-    },
+    type: LOG_IN_SUCCESS,
+    payload: userData,
   };
 }
