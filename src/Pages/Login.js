@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import logo from '../trivia.png';
 
@@ -23,6 +24,14 @@ class Login extends React.Component {
 
   onInputChange = ({ target }) => this.setState({ [target.name]: target.value },
     this.checkInputs);
+
+  startGame = async () => {
+    const tokenResponse = await fetch('https://opentdb.com/api_token.php?command=request');
+    const { token } = await tokenResponse.json();
+    localStorage.setItem('token', token);
+    const { history } = this.props;
+    history.push('/game');
+  }
 
   render() {
     const { name, email, isDisabled } = this.state;
@@ -57,6 +66,7 @@ class Login extends React.Component {
             type="button"
             data-testid="btn-play"
             disabled={ isDisabled }
+            onClick={ this.startGame }
           >
             Play
           </button>
@@ -73,5 +83,9 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.objectOf(PropTypes.any),
+}.isRequired;
 
 export default Login;
