@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import logo from '../trivia.png';
 
 const MINIMUN_LENTGH = 3;
@@ -69,6 +70,14 @@ class Login extends React.Component {
           >
             Play
           </button>
+          <Link to="/configuracao">
+            <button
+              type="button"
+              data-testid="btn-settings"
+            >
+              Configurações
+            </button>
+          </Link>
         </header>
       </div>
     );
