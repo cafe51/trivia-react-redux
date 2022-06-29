@@ -12,7 +12,7 @@ class MultipleChoices extends React.Component {
     this.generateRandomArratWithAnswers();
   }
 
-  // A função de randomizar o Array foi retirada do link abaixo;
+  // A função de randomizar o Array foi retirada do link abaixo ;
 
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
 
