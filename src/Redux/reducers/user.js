@@ -1,9 +1,11 @@
 // Esse reducer será responsável por tratar as informações da pessoa usuária
-import { LOG_IN_SUCCESS } from '../actions';
+import { LOG_IN_SUCCESS, RIGHT_ANSWER } from '../actions';
 
 const INITIAL_STATE = {
-  email: '',
+  gravatarEmail: '',
   name: '',
+  score: 0,
+  assertions: 0,
 };
 
 // Mude esse reducer para algo que faça sentido com o seu projeto;
@@ -13,8 +15,14 @@ const loginReducer = (state = INITIAL_STATE, action) => {
   case LOG_IN_SUCCESS:
     return {
       ...state,
-      email: action.payload.email,
+      gravatarEmail: action.payload.email,
       name: action.payload.name,
+    };
+  case RIGHT_ANSWER:
+    return {
+      ...state,
+      score: action.payload + state.score,
+      assertions: state.assertions + 1,
     };
   default:
     return state;

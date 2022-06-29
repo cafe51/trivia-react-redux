@@ -36,6 +36,7 @@ export default class Game extends React.Component {
         <Header />
         {response?.length > 0 && (
           <MultipleChoices
+            difficulty={ response[questionIndex].difficulty }
             question={ response[questionIndex].question }
             category={ response[questionIndex].category }
             correctAnswer={ response[questionIndex].correct_answer }
