@@ -30,13 +30,29 @@ class MultipleChoices extends React.Component {
   }
 
   generateRandomArratWithAnswers = () => {
-    const { correctAnswer, incorrectAnswers, type } = this.props;
+    const { correctAnswer, incorrectAnswers } = this.props;
     const newArray = [correctAnswer, ...incorrectAnswers];
-    if (type === 'multiple') {
-      this.setState({ answers: this.shuffleArray(newArray) });
-    } else {
-      this.setState({ answers: this.shuffleArray(newArray) });
-    }
+    const respostas = newArray.map((answer, index) => {
+      if (index === 0) {
+        return (
+          <button
+            type="button"
+            data-testid="correct-answer"
+            key={ answer }
+          >
+            {answer}
+          </button>);
+      }
+      return (
+        <button
+          type="button"
+          data-testid={ `wrong-answer-${index - 1}` }
+          key={ answer }
+        >
+          {answer}
+        </button>);
+    });
+    this.setState({ answers: this.shuffleArray(respostas) });
   }
 
   render() {
@@ -46,9 +62,9 @@ class MultipleChoices extends React.Component {
     console.log(incorrectAnswers);
     return (
       <div>
-        <h1 data-testid="question-text">{ question }</h1>
         <p data-testid="question-category">{category}</p>
-        {answers.map((answer) => <p key={ answer }>{answer}</p>)}
+        <h1 data-testid="question-text">{ question }</h1>
+        <div data-testid="answer-options">{answers}</div>
       </div>
     );
   }
