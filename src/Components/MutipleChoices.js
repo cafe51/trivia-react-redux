@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { rightAnswer } from '../Redux/actions';
 
 // const TO_MULTIPLE = 3;
 const ONE_SECOND = 1000;
+const DEZ = 10;
 
 class MultipleChoices extends React.Component {
   state = {
@@ -50,6 +53,22 @@ class MultipleChoices extends React.Component {
     this.setState({
       answered: true,
     });
+    const { dispatch, difficulty } = this.props;
+    const { timer } = this.state;
+    const difficultyPoints = {
+      easy: 1,
+      medium: 2,
+      hard: 3,
+    };
+
+    dispatch(rightAnswer(DEZ + (difficultyPoints[difficulty] * timer)));
+  }
+
+  wrongAnswerClick = () => {
+    clearInterval(this.timerId);
+    this.setState({
+      answered: true,
+    });
   }
 
   generateRandomArratWithAnswers = () => {
@@ -85,7 +104,7 @@ class MultipleChoices extends React.Component {
               }
               return (
                 <button
-                  onClick={ this.correctAnswerClick }
+                  onClick={ this.wrongAnswerClick }
                   className={ answered ? 'red' : 'x' }
                   type="button"
                   data-testid={ `wrong-answer-${index - 1}` }
@@ -111,4 +130,4 @@ MultipleChoices.propTypes = {
   incorrectAnswers: PropTypes.arrayOf(PropTypes.string),
 }.isRequired;
 
-export default MultipleChoices;
+export default connect()(MultipleChoices);
