@@ -17,7 +17,6 @@ export default class Game extends React.Component {
 
   getQuestions = async () => {
     const { history } = this.props;
-
     const token = localStorage.getItem('token');
     const fetchResponse = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const responseJson = await fetchResponse.json();
