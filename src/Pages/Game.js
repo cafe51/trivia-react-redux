@@ -8,7 +8,7 @@ const RESPONSE_CODE_3 = 3;
 export default class Game extends React.Component {
   state = {
     response: [],
-    questionIndex: 2,
+    questionIndex: 0,
   }
 
   componentDidMount() {
@@ -17,7 +17,6 @@ export default class Game extends React.Component {
 
   getQuestions = async () => {
     const { history } = this.props;
-
     const token = localStorage.getItem('token');
     const fetchResponse = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const responseJson = await fetchResponse.json();
@@ -28,9 +27,6 @@ export default class Game extends React.Component {
       localStorage.setItem('token', '');
       history.push('/');
     }
-    const { questionIndex, response } = this.state;
-    // console.log(response);
-    console.log(response[questionIndex].incorrect_answers);
   }
 
   render() {
@@ -38,7 +34,7 @@ export default class Game extends React.Component {
     return (
       <div>
         <Header />
-        {response.length > 0 && (
+        {response?.length > 0 && (
           <MultipleChoices
             question={ response[questionIndex].question }
             category={ response[questionIndex].category }
