@@ -5,11 +5,7 @@ import PropTypes from 'prop-types';
 
 class MultipleChoices extends React.Component {
   state = {
-    answers: [],
-  }
-
-  componentDidMount() {
-    this.generateRandomArratWithAnswers();
+    answered: false,
   }
 
   // A função de randomizar o Array foi retirada do link abaixo ;
@@ -29,13 +25,22 @@ class MultipleChoices extends React.Component {
     return arr;
   }
 
+  correctAnswerClick = () => {
+    this.setState({
+      answered: true,
+    });
+  }
+
   generateRandomArratWithAnswers = () => {
+    const { answered } = this.state;
     const { correctAnswer, incorrectAnswers } = this.props;
     const newArray = [correctAnswer, ...incorrectAnswers];
     const respostas = newArray.map((answer, index) => {
       if (index === 0) {
         return (
           <button
+            onClick={ this.correctAnswerClick }
+            className={ answered ? 'green' : 'x' }
             type="button"
             data-testid="correct-answer"
             key={ answer }
@@ -45,6 +50,8 @@ class MultipleChoices extends React.Component {
       }
       return (
         <button
+          onClick={ this.correctAnswerClick }
+          className={ answered ? 'red' : 'x' }
           type="button"
           data-testid={ `wrong-answer-${index - 1}` }
           key={ answer }
@@ -52,19 +59,16 @@ class MultipleChoices extends React.Component {
           {answer}
         </button>);
     });
-    this.setState({ answers: this.shuffleArray(respostas) });
+    return this.shuffleArray(respostas);
   }
 
   render() {
-    const { question, category, correctAnswer, incorrectAnswers } = this.props;
-    const { answers } = this.state;
-    console.log(correctAnswer);
-    console.log(incorrectAnswers);
+    const { question, category } = this.props;
     return (
       <div>
         <p data-testid="question-category">{category}</p>
         <h1 data-testid="question-text">{ question }</h1>
-        <div data-testid="answer-options">{answers}</div>
+        <div data-testid="answer-options">{this.generateRandomArratWithAnswers()}</div>
       </div>
     );
   }
