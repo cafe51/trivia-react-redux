@@ -2,10 +2,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // const TO_MULTIPLE = 3;
+const ONE_SECOND = 1000;
 
 class MultipleChoices extends React.Component {
   state = {
     answered: false,
+    timer: 30,
+    shuffledAnswers: [],
+  }
+
+  componentDidMount = () => {
+    this.generateRandomArratWithAnswers();
+    this.timerId = setInterval(() => {
+      this.setState((oldState) => {
+        console.log('oi');
+        return { timer: oldState.timer - 1 };
+      });
+    }, ONE_SECOND);
+  }
+
+  componentDidUpdate = () => {
+    const { timer } = this.state;
+    if (timer === 0) {
+      clearInterval(this.timerId);
+    }
   }
 
   // A função de randomizar o Array foi retirada do link abaixo ;
@@ -26,49 +46,58 @@ class MultipleChoices extends React.Component {
   }
 
   correctAnswerClick = () => {
+    clearInterval(this.timerId);
     this.setState({
       answered: true,
     });
   }
 
   generateRandomArratWithAnswers = () => {
-    const { answered } = this.state;
     const { correctAnswer, incorrectAnswers } = this.props;
     const newArray = [correctAnswer, ...incorrectAnswers];
-    const respostas = newArray.map((answer, index) => {
-      if (index === 0) {
-        return (
-          <button
-            onClick={ this.correctAnswerClick }
-            className={ answered ? 'green' : 'x' }
-            type="button"
-            data-testid="correct-answer"
-            key={ answer }
-          >
-            {answer}
-          </button>);
-      }
-      return (
-        <button
-          onClick={ this.correctAnswerClick }
-          className={ answered ? 'red' : 'x' }
-          type="button"
-          data-testid={ `wrong-answer-${index - 1}` }
-          key={ answer }
-        >
-          {answer}
-        </button>);
-    });
-    return this.shuffleArray(respostas);
+    this.setState({ shuffledAnswers: this.shuffleArray(newArray) });
   }
 
   render() {
-    const { question, category } = this.props;
+    const { question, category, correctAnswer } = this.props;
+    const { timer, answered, shuffledAnswers } = this.state;
+    console.log(shuffledAnswers);
     return (
       <div>
         <p data-testid="question-category">{category}</p>
         <h1 data-testid="question-text">{ question }</h1>
-        <div data-testid="answer-options">{this.generateRandomArratWithAnswers()}</div>
+        <div data-testid="answer-options">
+          {
+            shuffledAnswers.map((answer, index) => {
+              console.log(correctAnswer);
+              if (answer === correctAnswer) {
+                return (
+                  <button
+                    onClick={ this.correctAnswerClick }
+                    className={ answered ? 'green' : 'x' }
+                    type="button"
+                    data-testid="correct-answer"
+                    key={ answer }
+                    disabled={ timer === 0 }
+                  >
+                    {answer}
+                  </button>);
+              }
+              return (
+                <button
+                  onClick={ this.correctAnswerClick }
+                  className={ answered ? 'red' : 'x' }
+                  type="button"
+                  data-testid={ `wrong-answer-${index - 1}` }
+                  key={ answer }
+                  disabled={ timer === 0 }
+                >
+                  {answer}
+                </button>);
+            })
+          }
+        </div>
+        <p>{timer}</p>
       </div>
     );
   }
