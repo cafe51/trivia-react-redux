@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { rightAnswer, nextQuestion, sendArrayAnswers } from '../Redux/actions';
+import { rightAnswer, nextQuestion } from '../Redux/actions';
 
 // const TO_MULTIPLE = 3;
 const ONE_SECOND = 1000;
-const ONE = 1000;
 const DEZ = 10;
 const FOUR = 4;
 
@@ -13,25 +12,19 @@ class MultipleChoices extends React.Component {
   state = {
     answered: false,
     timer: 30,
+    shuffledArray: [],
+    renderQuestion: false,
   }
 
   componentDidMount = () => {
-    // this.generateRandomArratWithAnswers();
-    this.timerId = setInterval(() => {
-      this.setState((oldState) => {
-        console.log('oi');
-        return { timer: oldState.timer - 1 };
-      });
-    }, ONE_SECOND);
-    const { correctAnswer, incorrectAnswers, dispatch } = this.props;
-    const newArray = [correctAnswer, ...incorrectAnswers];
-    dispatch(sendArrayAnswers(newArray));
+    this.startTimer();
+    this.randomizeAnswersAndStartQuestion();
   }
 
-  timerFunction = () => {
+  startTimer = () => {
     this.timerId = setInterval(() => {
       this.setState((initialState) => ({ timer: initialState.timer - 1 }));
-    }, ONE);
+    }, ONE_SECOND);
   }
 
   componentDidUpdate = () => {
@@ -81,60 +74,64 @@ class MultipleChoices extends React.Component {
     });
   }
 
-  generateRandomArratWithAnswers = (array) => {
-    const { dispatch, history, questionX } = this.props;
-    console.log(this.props);
+  randomizeAnswersAndStartQuestion = () => {
+    const { correctAnswer, incorrectAnswers } = this.props;
+
+    const newArray = [correctAnswer, ...incorrectAnswers];
+    const shuffledArray = this.shuffleArray(newArray);
+    this.setState({ shuffledArray, renderQuestion: false }, () => this.setState({
+      renderQuestion: true,
+      answered: false,
+      timer: 30 }));
+  }
+
+  nextQuestion = async () => {
+    const { questionX, history, dispatch } = this.props;
     if (questionX === FOUR) {
+      clearInterval(this.timerId);
       history.push('/feedback');
-      console.log('five');
     } else {
-      this.shuffleArray(array);
-      // console.log(array);
-      dispatch(sendArrayAnswers(array));
+      this.startTimer();
+      await dispatch(nextQuestion());
+      this.randomizeAnswersAndStartQuestion();
     }
   }
 
   render() {
-    const { question, category, correctAnswer, dispatch,
-      incorrectAnswers } = this.props;
-    const newArray = [correctAnswer, ...incorrectAnswers];
-    console.log('teste', newArray);
+    const { question, category, correctAnswer } = this.props;
 
-    const { timer, answered } = this.state;
+    const { timer, answered, shuffledArray, renderQuestion } = this.state;
     return (
       <div>
         <p data-testid="question-category">{category}</p>
         <h1 data-testid="question-text">{ question }</h1>
         <div data-testid="answer-options">
-          {
-            this.shuffleArray(newArray).map((answer, index) => {
-              // console.log(correctAnswer);
-              if (answer === correctAnswer) {
-                return (
-                  <button
-                    onClick={ this.correctAnswerClick }
-                    className={ answered ? 'green' : 'x' }
-                    type="button"
-                    data-testid="correct-answer"
-                    key={ answer }
-                    disabled={ timer === 0 }
-                  >
-                    {answer}
-                  </button>);
-              }
+          { renderQuestion && shuffledArray.map((answer, index) => {
+            if (answer === correctAnswer) {
               return (
                 <button
-                  onClick={ this.wrongAnswerClick }
-                  className={ answered ? 'red' : 'x' }
+                  onClick={ this.correctAnswerClick }
+                  className={ answered ? 'green' : 'x' }
                   type="button"
-                  data-testid={ `wrong-answer-${index - 1}` }
+                  data-testid="correct-answer"
                   key={ answer }
                   disabled={ timer === 0 }
                 >
                   {answer}
                 </button>);
-            })
-          }
+            }
+            return (
+              <button
+                onClick={ this.wrongAnswerClick }
+                className={ answered ? 'red' : 'x' }
+                type="button"
+                data-testid={ `wrong-answer-${index - 1}` }
+                key={ answer }
+                disabled={ timer === 0 }
+              >
+                {answer}
+              </button>);
+          })}
         </div>
         <p>{timer}</p>
         {answered
@@ -142,15 +139,8 @@ class MultipleChoices extends React.Component {
           <button
             type="button"
             data-testid="btn-next"
-            onClick={ () => {
-              this.timerFunction();
-              dispatch(nextQuestion());
-              console.log(newArray, question);
-              this.generateRandomArratWithAnswers(newArray);
-              this.setState({
-                answered: false,
-                timer: 30,
-              });
+            onClick={ async () => {
+              this.nextQuestion();
             } }
           >
             Next
