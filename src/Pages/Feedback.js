@@ -25,10 +25,13 @@ class Feedback extends React.Component {
 
   render() {
     const { feedbackMsg } = this.state;
+    const { score, assertions } = this.props;
     return (
       <div>
         <Header />
         {feedbackMsg && <p data-testid="feedback-text">{feedbackMsg}</p>}
+        <p data-testid="feedback-total-score">{score}</p>
+        <p data-testid="feedback-total-question">{assertions}</p>
       </div>
     );
   }
