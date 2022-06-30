@@ -1,5 +1,5 @@
 import { LOG_IN_SUCCESS, RIGHT_ANSWER, NEXT_QUESTION,
-  SEND_ARRAY_ANSWERS } from '../actions';
+  RESTART_QUESTIONS } from '../actions';
 
 const INITIAL_STATE = {
   gravatarEmail: '',
@@ -29,10 +29,11 @@ const loginReducer = (state = INITIAL_STATE, action) => {
       ...state,
       question: state.question + 1,
     };
-  case SEND_ARRAY_ANSWERS:
+  case RESTART_QUESTIONS:
     return {
       ...state,
-      answers: action.payload,
+      question: 0,
+      score: 0,
     };
 
   default:
