@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Header from '../Components/Header';
 import MultipleChoices from '../Components/MutipleChoices';
 
 const RESPONSE_CODE_3 = 3;
 
-export default class Game extends React.Component {
+class Game extends React.Component {
   state = {
     response: [],
-    questionIndex: 0,
   }
 
   componentDidMount() {
@@ -30,7 +30,9 @@ export default class Game extends React.Component {
   }
 
   render() {
-    const { questionIndex, response } = this.state;
+    const { response } = this.state;
+    const { questionIndex, history } = this.props;
+    console.log(questionIndex);
     return (
       <div>
         <Header />
@@ -42,6 +44,7 @@ export default class Game extends React.Component {
             correctAnswer={ response[questionIndex].correct_answer }
             incorrectAnswers={ response[questionIndex].incorrect_answers }
             type={ response[questionIndex].type }
+            history={ history }
           />
         )}
         {/* {question == 1} */}
@@ -49,7 +52,12 @@ export default class Game extends React.Component {
     );
   }
 }
+const mapStateToProps = (state) => ({
+  questionIndex: state.player.question,
+});
 
 Game.propTypes = {
   history: PropTypes.objectOf(PropTypes.any),
 }.isRequired;
+
+export default connect(mapStateToProps)(Game);

@@ -1,27 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { rightAnswer } from '../Redux/actions';
+import { rightAnswer, nextQuestion, sendArrayAnswers } from '../Redux/actions';
 
 // const TO_MULTIPLE = 3;
 const ONE_SECOND = 1000;
+const ONE = 1000;
 const DEZ = 10;
+const FOUR = 4;
 
 class MultipleChoices extends React.Component {
   state = {
     answered: false,
     timer: 30,
-    shuffledAnswers: [],
   }
 
   componentDidMount = () => {
-    this.generateRandomArratWithAnswers();
+    // this.generateRandomArratWithAnswers();
     this.timerId = setInterval(() => {
       this.setState((oldState) => {
         console.log('oi');
         return { timer: oldState.timer - 1 };
       });
     }, ONE_SECOND);
+    const { correctAnswer, incorrectAnswers, dispatch } = this.props;
+    const newArray = [correctAnswer, ...incorrectAnswers];
+    dispatch(sendArrayAnswers(newArray));
+  }
+
+  timerFunction = () => {
+    this.timerId = setInterval(() => {
+      this.setState((initialState) => ({ timer: initialState.timer - 1 }));
+    }, ONE);
   }
 
   componentDidUpdate = () => {
@@ -71,24 +81,34 @@ class MultipleChoices extends React.Component {
     });
   }
 
-  generateRandomArratWithAnswers = () => {
-    const { correctAnswer, incorrectAnswers } = this.props;
-    const newArray = [correctAnswer, ...incorrectAnswers];
-    this.setState({ shuffledAnswers: this.shuffleArray(newArray) });
+  generateRandomArratWithAnswers = (array) => {
+    const { dispatch, history, questionX } = this.props;
+    console.log(this.props);
+    if (questionX === FOUR) {
+      history.push('/feedback');
+      console.log('five');
+    } else {
+      this.shuffleArray(array);
+      // console.log(array);
+      dispatch(sendArrayAnswers(array));
+    }
   }
 
   render() {
-    const { question, category, correctAnswer } = this.props;
-    const { timer, answered, shuffledAnswers } = this.state;
-    console.log(shuffledAnswers);
+    const { question, category, correctAnswer, dispatch,
+      incorrectAnswers } = this.props;
+    const newArray = [correctAnswer, ...incorrectAnswers];
+    console.log('teste', newArray);
+
+    const { timer, answered } = this.state;
     return (
       <div>
         <p data-testid="question-category">{category}</p>
         <h1 data-testid="question-text">{ question }</h1>
         <div data-testid="answer-options">
           {
-            shuffledAnswers.map((answer, index) => {
-              console.log(correctAnswer);
+            this.shuffleArray(newArray).map((answer, index) => {
+              // console.log(correctAnswer);
               if (answer === correctAnswer) {
                 return (
                   <button
@@ -117,10 +137,33 @@ class MultipleChoices extends React.Component {
           }
         </div>
         <p>{timer}</p>
+        {answered
+        && (
+          <button
+            type="button"
+            data-testid="btn-next"
+            onClick={ () => {
+              this.timerFunction();
+              dispatch(nextQuestion());
+              console.log(newArray, question);
+              this.generateRandomArratWithAnswers(newArray);
+              this.setState({
+                answered: false,
+                timer: 30,
+              });
+            } }
+          >
+            Next
+          </button>)}
       </div>
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  answers: state.player.answers,
+  questionX: state.player.question,
+});
 
 MultipleChoices.propTypes = {
   type: PropTypes.string,
@@ -130,4 +173,4 @@ MultipleChoices.propTypes = {
   incorrectAnswers: PropTypes.arrayOf(PropTypes.string),
 }.isRequired;
 
-export default connect()(MultipleChoices);
+export default connect(mapStateToProps)(MultipleChoices);
