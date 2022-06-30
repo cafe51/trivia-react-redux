@@ -20,7 +20,6 @@ class Game extends React.Component {
     const token = localStorage.getItem('token');
     const fetchResponse = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const responseJson = await fetchResponse.json();
-    console.log(responseJson);
     if (responseJson.response_code === 0) {
       this.setState({ response: responseJson.results });
     } else if (responseJson.response_code === RESPONSE_CODE_3) {
@@ -32,7 +31,6 @@ class Game extends React.Component {
   render() {
     const { response } = this.state;
     const { questionIndex, history } = this.props;
-    console.log(questionIndex);
     return (
       <div>
         <Header />
@@ -44,6 +42,7 @@ class Game extends React.Component {
             correctAnswer={ response[questionIndex].correct_answer }
             incorrectAnswers={ response[questionIndex].incorrect_answers }
             type={ response[questionIndex].type }
+            questionIndex={ questionIndex }
             history={ history }
           />
         )}

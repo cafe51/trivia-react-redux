@@ -23,17 +23,3 @@ export function nextQuestion() {
     type: NEXT_QUESTION,
   };
 }
-
-export function sendArrayAnswers(answers) {
-  return {
-    type: SEND_ARRAY_ANSWERS,
-    payload: answers,
-  };
-}
-
-export function sendArrayAnswers2(answers) {
-  return {
-    type: SEND_ARRAY_ANSWERS2,
-    payload: answers,
-  };
-}
