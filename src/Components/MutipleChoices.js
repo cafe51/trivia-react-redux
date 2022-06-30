@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { rightAnswer, nextQuestion } from '../Redux/actions';
+import md5 from 'crypto-js/md5';
+import { rightAnswer, nextQuestion, restartQuestions } from '../Redux/actions';
 
 // const TO_MULTIPLE = 3;
 const ONE_SECOND = 1000;
@@ -86,8 +87,18 @@ class MultipleChoices extends React.Component {
   }
 
   nextQuestion = async () => {
-    const { questionX, history, dispatch } = this.props;
+    const { questionX, history, dispatch, name, gravatarEmail, score } = this.props;
+    // Veriica se passará para a tela de feedback
     if (questionX === FOUR) {
+      let ranking = JSON.parse(localStorage.getItem('ranking'));
+      dispatch(restartQuestions());
+      if (!ranking) ranking = [];
+      ranking.push({
+        name,
+        score,
+        picture: `https://www.gravatar.com/avatar/${md5(gravatarEmail).toString()}`,
+      });
+      localStorage.setItem('ranking', JSON.stringify(ranking));
       clearInterval(this.timerId);
       history.push('/feedback');
     } else {
@@ -151,11 +162,16 @@ class MultipleChoices extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  answers: state.player.answers,
   questionX: state.player.question,
+  name: state.player.name,
+  gravatarEmail: state.player.gravatarEmail,
+  score: state.player.score,
 });
 
 MultipleChoices.propTypes = {
+  score: PropTypes.number,
+  name: PropTypes.string,
+  gravatarEmail: PropTypes.string,
   type: PropTypes.string,
   question: PropTypes.string,
   category: PropTypes.string,
