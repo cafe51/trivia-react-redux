@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import userEvent from '@testing-library/user-event';
-import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { fireEvent, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import App from '../App';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux'
 
@@ -28,7 +28,14 @@ describe('Testando se a página de ranking...', () => {
             { timeout: 1000 },
         )
 
+        // setTimeout(() => console.log('2sec'), 2000)
+
+        
+
         const correctAnswer1 = screen.getByTestId('correct-answer');
+        // setTimeout(() =>{ }, 1000);
+        // await waitFor(async() => {await screen.findByRole('button', {name: /next/i})})
+        expect(await screen.findByText('27', {},{timeout: 5000})).toBeInTheDocument()
         userEvent.click(correctAnswer1);
         const nextButton1 = screen.getByRole('button', {name: /next/i});
         userEvent.click(nextButton1);
@@ -84,7 +91,7 @@ describe('Testando se a página de ranking...', () => {
 
         const player1name = screen.getByText(/grupo10/i);
         const player1picture = screen.getByRole('img', {  name: /foto de grupo10/i }) 
-        const player1score = screen.getByText(/200/i);
+        const player1score = screen.getByText(/197/i);
 
         expect(player1name).toBeInTheDocument();
         expect(player1picture).toHaveAttribute('src', 'https://www.gravatar.com/avatar/fc047b396b1e1955d2b35283e6449795');
@@ -166,12 +173,12 @@ describe('Testando se a página de ranking...', () => {
 
         const player2name = screen.getByText(/2grupo10/i);
         const player2picture = screen.getByRole('img', {  name: /foto de 2grupo10/i }) 
-        const player2score = screen.getAllByText(/200/i);
+        const player2score = screen.getByText(/200/i);
 
         expect(player2name).toBeInTheDocument();
         expect(player2picture).toHaveAttribute('src', 'https://www.gravatar.com/avatar/5ee141cf8fb99567da01bef3b5fb429e');
         expect(player2picture).toBeInTheDocument();
-        expect(player2score[1]).toBeInTheDocument();
+        expect(player2score).toBeInTheDocument();
 
         const inicialButton2 = screen.getByRole('button', {name:/tela inicial/i});
         expect(inicialButton2).toBeInTheDocument();
