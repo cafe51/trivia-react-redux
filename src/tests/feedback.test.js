@@ -4,7 +4,7 @@ import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/r
 import App from '../App';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux'
 
-const MOCK_DATA = {
+export const MOCK_DATA = {
   player: {
     gravatarEmail: 'igor@email',
     name: 'Igor',
