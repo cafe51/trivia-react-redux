@@ -79,8 +79,8 @@ describe('Testando se a página de ranking...', () => {
         const rankingTitle =  screen.getByText(/ranking/i);
         expect(rankingTitle).toBeInTheDocument();
 
-        const spy = spyOn(global, 'sort');
-        expect(spy).toHaveBeenCalled();
+        // const spy = spyOn(global, 'sort');
+        // expect(spy).toHaveBeenCalled();
 
         const player1name = screen.getByText(/grupo10/i);
         const player1picture = screen.getByRole('img', {  name: /foto de grupo10/i }) 
@@ -96,5 +96,88 @@ describe('Testando se a página de ranking...', () => {
 
         userEvent.click(inicialButton);
         expect(history.location.pathname).toBe('/');
+
+        const nameInput2 = screen.getByRole('textbox', { name:/nome:/i });
+        const emailInput2 = screen.getByRole('textbox', { name:/email:/i });
+        const playButton2 = screen.getByRole('button', { name:/play/i });
+
+        userEvent.type(nameInput2, '2grupo10')
+        userEvent.type(emailInput2, '2grupo10@hotmail.com')
+        userEvent.click(playButton2);
+
+        await waitForElementToBeRemoved(
+            () => screen.getByRole('button', { name:/play/i }),
+            { timeout: 1000 },
+        )
+
+        const correctAnswer12 = screen.getByTestId('correct-answer');
+        userEvent.click(correctAnswer12);
+        const nextButton12 = screen.getByRole('button', {name: /next/i});
+        userEvent.click(nextButton12);
+
+        await waitForElementToBeRemoved(
+            () => screen.getByRole('button', {name: /next/i}),
+            { timeout: 1000 },
+        )
+
+        const correctAnswer22 = screen.getByTestId('correct-answer');
+        userEvent.click(correctAnswer22);
+        const nextButton22 = screen.getByRole('button', {name: /next/i});
+        userEvent.click(nextButton22);
+
+        await waitForElementToBeRemoved(
+            () => screen.getByRole('button', {name: /next/i}),
+            { timeout: 1000 },
+        )
+
+        const correctAnswer32 = screen.getByTestId('correct-answer');
+        userEvent.click(correctAnswer32);
+        const nextButton32= screen.getByRole('button', {name: /next/i});
+        userEvent.click(nextButton32);
+
+        await waitForElementToBeRemoved(
+            () => screen.getByRole('button', {name: /next/i}),
+            { timeout: 1000 },
+        )
+
+        const correctAnswer42 = screen.getByTestId('correct-answer');
+        userEvent.click(correctAnswer42);
+        const nextButton42 = screen.getByRole('button', {name: /next/i});
+        userEvent.click(nextButton42);
+
+        await waitForElementToBeRemoved(
+            () => screen.getByRole('button', {name: /next/i}),
+            { timeout: 1000 },
+        )
+
+        const correctAnswer52 = screen.getByTestId('correct-answer');
+        userEvent.click(correctAnswer52);
+        const nextButton52 = screen.getByRole('button', {name: /next/i});
+        userEvent.click(nextButton52);
+
+        const rankingButton2 = screen.getByRole('button', {name:/ranking/i});
+        userEvent.click(rankingButton2);
+
+        const rankingTitle2 =  screen.getByText(/ranking/i);
+        expect(rankingTitle2).toBeInTheDocument();
+
+        // const spy = spyOn(global, 'sort');
+        // expect(spy).toHaveBeenCalled();
+
+        const player2name = screen.getByText(/2grupo10/i);
+        const player2picture = screen.getByRole('img', {  name: /foto de 2grupo10/i }) 
+        const player2score = screen.getAllByText(/200/i);
+
+        expect(player2name).toBeInTheDocument();
+        expect(player2picture).toHaveAttribute('src', 'https://www.gravatar.com/avatar/5ee141cf8fb99567da01bef3b5fb429e');
+        expect(player2picture).toBeInTheDocument();
+        expect(player2score[1]).toBeInTheDocument();
+
+        const inicialButton2 = screen.getByRole('button', {name:/tela inicial/i});
+        expect(inicialButton2).toBeInTheDocument();
+
+        userEvent.click(inicialButton2);
+        expect(history.location.pathname).toBe('/');
+    
     })
 })
