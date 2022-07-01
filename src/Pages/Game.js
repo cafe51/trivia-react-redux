@@ -19,6 +19,7 @@ class Game extends React.Component {
     const { history } = this.props;
     const token = localStorage.getItem('token');
     const fetchResponse = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
+    console.log(fetchResponse);
     const responseJson = await fetchResponse.json();
     if (responseJson.response_code === 0) {
       this.setState({ response: responseJson.results });
