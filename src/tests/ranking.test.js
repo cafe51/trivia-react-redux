@@ -27,14 +27,8 @@ describe('Testando se a página de ranking...', () => {
             () => screen.getByRole('button', { name:/play/i }),
             { timeout: 1000 },
         )
-
-        // setTimeout(() => console.log('2sec'), 2000)
-
         
-
         const correctAnswer1 = screen.getByTestId('correct-answer');
-        // setTimeout(() =>{ }, 1000);
-        // await waitFor(async() => {await screen.findByRole('button', {name: /next/i})})
         expect(await screen.findByText('27', {},{timeout: 5000})).toBeInTheDocument()
         userEvent.click(correctAnswer1);
         const nextButton1 = screen.getByRole('button', {name: /next/i});
