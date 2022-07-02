@@ -15,11 +15,20 @@ export const MOCK_DATA = {
     }
 };
 
+export const MOCK_DATA2 = {
+  player: {
+    gravatarEmail: 'igor@email',
+    name: 'Igor',
+    score: 50,
+    assertions: 2,
+    question: 0,
+    answers: [],
+    }
+};
+
 describe('Testando página de feedbacks', () => {
   test('Contém nome do Usuário, Email, Score, Mensagem', () => {
     const render = renderWithRouterAndRedux(<App />, MOCK_DATA, '/feedback');
-
-    console.log(render.store.getState())
     
     const name = screen.getByText(/igor/i)
     expect(name).toBeInTheDocument()
@@ -28,6 +37,13 @@ describe('Testando página de feedbacks', () => {
     expect(hasText[0]).toBeInTheDocument()
 
     const msg = screen.getByText(/well done!/i)
+    expect(msg).toBeInTheDocument()
+  })
+
+  test('Contém a mensagem para assertions menores que 3', () => {
+    const render = renderWithRouterAndRedux(<App />, MOCK_DATA2, '/feedback');
+
+    const msg = screen.getByText(/could be better\.\.\./i)
     expect(msg).toBeInTheDocument()
   })
 

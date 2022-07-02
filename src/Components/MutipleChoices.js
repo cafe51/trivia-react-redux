@@ -18,6 +18,7 @@ class MultipleChoices extends React.Component {
   }
 
   componentDidMount = () => {
+    this.wrongAnswerIndex = 0;
     this.startTimer();
     this.randomizeAnswersAndStartQuestion();
   }
@@ -29,6 +30,7 @@ class MultipleChoices extends React.Component {
   }
 
   componentDidUpdate = () => {
+    this.wrongAnswerIndex = 0;
     const { timer } = this.state;
     if (timer === 0) {
       clearInterval(this.timerId);
@@ -36,19 +38,13 @@ class MultipleChoices extends React.Component {
   }
 
   // A função de randomizar o Array foi retirada do link abaixo ;
-
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
 
-  // Função para randomizar array
   shuffleArray= (arr) => {
-    // Loop em todos os elementos
     for (let i = arr.length - 1; i > 0; i -= 1) {
-      // Escolhendo elemento aleatório
       const j = Math.floor(Math.random() * (i + 1));
-      // Reposicionando elemento
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    // Retornando array com aleatoriedade
     return arr;
   }
 
@@ -64,7 +60,6 @@ class MultipleChoices extends React.Component {
       medium: 2,
       hard: 3,
     };
-
     dispatch(rightAnswer(DEZ + (difficultyPoints[difficulty] * timer)));
   }
 
@@ -102,6 +97,7 @@ class MultipleChoices extends React.Component {
       clearInterval(this.timerId);
       history.push('/feedback');
     } else {
+      this.wrongAnswerIndex = 0;
       this.startTimer();
       await dispatch(nextQuestion());
       this.randomizeAnswersAndStartQuestion();
@@ -111,13 +107,14 @@ class MultipleChoices extends React.Component {
   render() {
     const { question, category, correctAnswer } = this.props;
 
-    const { timer, answered, shuffledArray, renderQuestion } = this.state;
+    const { timer, answered,
+      shuffledArray, renderQuestion } = this.state;
     return (
       <div>
         <p data-testid="question-category">{category}</p>
         <h1 data-testid="question-text">{ question }</h1>
         <div data-testid="answer-options">
-          { renderQuestion && shuffledArray.map((answer, index) => {
+          { renderQuestion && shuffledArray.map((answer) => {
             if (answer === correctAnswer) {
               return (
                 <button
@@ -131,12 +128,13 @@ class MultipleChoices extends React.Component {
                   {answer}
                 </button>);
             }
+            this.wrongAnswerIndex += 1;
             return (
               <button
                 onClick={ this.wrongAnswerClick }
                 className={ answered ? 'red' : 'x' }
                 type="button"
-                data-testid={ `wrong-answer-${index - 1}` }
+                data-testid={ `wrong-answer-${this.wrongAnswerIndex - 1}` }
                 key={ answer }
                 disabled={ timer === 0 }
               >
@@ -144,7 +142,7 @@ class MultipleChoices extends React.Component {
               </button>);
           })}
         </div>
-        <p>{timer}</p>
+        <p data-testid="timer">{timer}</p>
         {answered
         && (
           <button
