@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import logo from '../trivia.png';
-import { logInSucces } from '../Redux/actions';
+import { logInSucces, restartQuestions } from '../Redux/actions';
 
 const MINIMUN_LENTGH = 3;
 
@@ -33,6 +33,7 @@ class Login extends React.Component {
     localStorage.setItem('token', token);
     const { history, dispatch } = this.props;
     const { name, email } = this.state;
+    dispatch(restartQuestions());
     dispatch(logInSucces({ name, email }));
     history.push('/game');
   }
