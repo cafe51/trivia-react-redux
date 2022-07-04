@@ -22,8 +22,8 @@ class Game extends React.Component {
     const responseJson = await fetchResponse.json();
     if (responseJson.response_code === 0) {
       this.setState({ response: responseJson.results });
-    } else if (responseJson.response_code === RESPONSE_CODE_3) {
-      localStorage.setItem('token', '');
+    }
+    if (responseJson.response_code === RESPONSE_CODE_3) {
       history.push('/');
     }
   }

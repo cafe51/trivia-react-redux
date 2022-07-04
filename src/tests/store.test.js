@@ -1,10 +1,14 @@
 import React, { useReducer } from 'react';
 import userEvent from '@testing-library/user-event';
-import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import App from '../App';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux'
-import originalStore from '../Redux/store/store'
-import {INITIAL_STATE} from '../Redux/reducers/user'
+import originalStore from '../redux/store/store'
+import {INITIAL_STATE} from '../redux/reducers/user'
+import { Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from '../redux/store/store'
+import { createMemoryHistory } from 'history'
 
 describe('Testa se a store do redux', () => {
     test('Possue os elementos preenchidos', async () => {
@@ -15,7 +19,17 @@ describe('Testa se a store do redux', () => {
             json: jest.fn().mockResolvedValue(response),
         });
 
-        const {store} = renderWithRouterAndRedux(<App />, INITIAL_STATE, '/');
+        /* const {store} = renderWithRouterAndRedux(<App />, INITIAL_STATE, '/'); */
+
+        const history = createMemoryHistory();
+        window.Cypress = jest.fn(true);
+        render(
+            <Router history={ history }>
+                <Provider store={store}>
+                    <App />
+                </Provider>
+            </Router>
+        )
 
         const nameInput = screen.getByRole('textbox', { name:/nome:/i });
         const emailInput = screen.getByRole('textbox', { name:/email:/i });

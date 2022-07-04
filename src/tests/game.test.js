@@ -17,6 +17,7 @@ describe('Testando se a página de game...', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    window.Cypress = true;
   })
   
   test('verifica se os botões desabilitam ao tempo chegar em 0', async () => {
@@ -85,8 +86,9 @@ describe('Testando se a página de game...', () => {
         global.fetch.mockResolvedValue({
             json: jest.fn().mockResolvedValue(MOCK_API_RESPONSE_CODE_3),
     });
-    global.Storage.prototype.getItem = jest.fn((key) => 'pudim');
-    
+    /* global.Storage.prototype.getItem = jest.fn((key) => 'pudim'); */
+    localStorage.setItem('token', 'dasda');
+
     const { history } = renderWithRouterAndRedux(<App />, MOCK_DATA , "/game" );
 
     expect(await screen.findByText(/nome:/i, {},{timeout: 5000})).toBeInTheDocument()
