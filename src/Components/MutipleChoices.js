@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
-import { rightAnswer, nextQuestion } from '../Redux/actions';
+import { rightAnswer, nextQuestion } from '../redux/actions';
 
 // const TO_MULTIPLE = 3;
 const ONE_SECOND = 1000;

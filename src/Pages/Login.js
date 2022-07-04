@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import logo from '../trivia.png';
-import { logInSucces, restartQuestions } from '../Redux/actions';
+import { logInSucces, restartQuestions } from '../redux/actions';
 
 const MINIMUN_LENTGH = 3;
 
