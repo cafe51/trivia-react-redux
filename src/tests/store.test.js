@@ -7,6 +7,12 @@ import originalStore from '../Redux/store/store'
 import {INITIAL_STATE} from '../Redux/reducers/user'
 
 describe('Testa se a store do redux', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.useFakeTimers();
+        window.Cypress = true;
+      })
+      
     test('Possue os elementos preenchidos', async () => {
         const response = {"response_code":0,"results":[{"category":"Geography","type":"multiple","difficulty":"easy","question":"What is the only state in the United States that does not have a flag in a shape with 4 edges?","correct_answer":"Ohio","incorrect_answers":["Florida","Idaho","New Mexico"]},{"category":"History","type":"boolean","difficulty":"easy","question":"Former United States Presidents John Adams and Thomas Jefferson died within hours of each other.","correct_answer":"True","incorrect_answers":["False"]},{"category":"Entertainment: Film","type":"multiple","difficulty":"easy","question":"Who played the Cenobite called &quot;Pinhead&quot; in the original Hellraiser films?","correct_answer":"Doug Bradley","incorrect_answers":["Doug Jones","Doug Savant","Doug Benson"]},{"category":"Entertainment: Film","type":"multiple","difficulty":"easy","question":"What is Lilo&#039;s last name from Lilo and Stitch?","correct_answer":"Pelekai","incorrect_answers":["Anoa\u02bbi","Kealoha","Ku\u02bbulei"]},{"category":"Geography","type":"multiple","difficulty":"easy","question":"What was the African nation of Zimbabwe formerly known as?","correct_answer":"Rhodesia","incorrect_answers":["Zambia","Mozambique"," Bulawayo"]}]}
 
