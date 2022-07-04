@@ -1,7 +1,7 @@
 import { LOG_IN_SUCCESS, RIGHT_ANSWER, NEXT_QUESTION,
   RESTART_QUESTIONS } from '../actions';
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   gravatarEmail: '',
   name: '',
   score: 0,

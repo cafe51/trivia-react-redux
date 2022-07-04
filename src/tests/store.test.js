@@ -4,6 +4,7 @@ import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/r
 import App from '../App';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux'
 import originalStore from '../Redux/store/store'
+import {INITIAL_STATE} from '../Redux/reducers/user'
 
 describe('Testa se a store do redux', () => {
     test('Possue os elementos preenchidos', async () => {
@@ -14,7 +15,7 @@ describe('Testa se a store do redux', () => {
             json: jest.fn().mockResolvedValue(response),
         });
 
-        const {store} = renderWithRouterAndRedux(<App />, null, '/', originalStore);
+        const {store} = renderWithRouterAndRedux(<App />, INITIAL_STATE, '/');
 
         const nameInput = screen.getByRole('textbox', { name:/nome:/i });
         const emailInput = screen.getByRole('textbox', { name:/email:/i });

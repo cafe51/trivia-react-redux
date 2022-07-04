@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
-import { rightAnswer, nextQuestion, restartQuestions } from '../Redux/actions';
+import { rightAnswer, nextQuestion } from '../Redux/actions';
 
 // const TO_MULTIPLE = 3;
 const ONE_SECOND = 1000;
@@ -31,8 +31,9 @@ class MultipleChoices extends React.Component {
 
   componentDidUpdate = () => {
     this.wrongAnswerIndex = 0;
-    const { timer } = this.state;
-    if (timer === 0) {
+    const { timer, answered } = this.state;
+    if (timer === 0 && !answered) {
+      this.setState({ answered: true });
       clearInterval(this.timerId);
     }
   }
@@ -86,7 +87,6 @@ class MultipleChoices extends React.Component {
     // Veriica se passará para a tela de feedback
     if (questionX === FOUR) {
       let ranking = JSON.parse(localStorage.getItem('ranking'));
-      dispatch(restartQuestions());
       if (!ranking) ranking = [];
       ranking.push({
         name,
@@ -104,6 +104,18 @@ class MultipleChoices extends React.Component {
     }
   }
 
+  encodeString = (string) => {
+    const newString = string
+      .replace(/&amp;/img, '&')
+      .replace(/&quot;/img, '"')
+      .replace(/&ldquo;/img, '“')
+      .replace(/&rdquo;/img, '"')
+      .replace(/&#039;/img, '\'')
+      .replace(/&lt;/img, '<')
+      .replace(/&gt;/img, '>');
+    return newString;
+  }
+
   render() {
     const { question, category, correctAnswer } = this.props;
 
@@ -112,7 +124,7 @@ class MultipleChoices extends React.Component {
     return (
       <div>
         <p data-testid="question-category">{category}</p>
-        <h1 data-testid="question-text">{ question }</h1>
+        <h1 data-testid="question-text">{ this.encodeString(question) }</h1>
         <div data-testid="answer-options">
           { renderQuestion && shuffledArray.map((answer) => {
             if (answer === correctAnswer) {
@@ -125,7 +137,7 @@ class MultipleChoices extends React.Component {
                   key={ answer }
                   disabled={ timer === 0 }
                 >
-                  {answer}
+                  {this.encodeString(answer)}
                 </button>);
             }
             this.wrongAnswerIndex += 1;
@@ -138,12 +150,12 @@ class MultipleChoices extends React.Component {
                 key={ answer }
                 disabled={ timer === 0 }
               >
-                {answer}
+                {this.encodeString(answer)}
               </button>);
           })}
         </div>
         <p data-testid="timer">{timer}</p>
-        {answered
+        {(answered || timer === 0)
         && (
           <button
             type="button"
