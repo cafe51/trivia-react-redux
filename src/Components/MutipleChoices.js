@@ -31,9 +31,8 @@ class MultipleChoices extends React.Component {
 
   componentDidUpdate = () => {
     this.wrongAnswerIndex = 0;
-    const { timer, answered } = this.state;
-    if (timer === 0 && !answered) {
-      this.setState({ answered: true });
+    const { timer } = this.state;
+    if (timer === 0) {
       clearInterval(this.timerId);
     }
   }
@@ -76,10 +75,10 @@ class MultipleChoices extends React.Component {
 
     const newArray = [correctAnswer, ...incorrectAnswers];
     const shuffledArray = this.shuffleArray(newArray);
-    this.setState({ shuffledArray, renderQuestion: false }, () => this.setState({
-      renderQuestion: true,
-      answered: false,
-      timer: 30 }));
+    this.setState({ shuffledArray, renderQuestion: false, timer: 30 },
+      () => this.setState({
+        renderQuestion: true,
+        answered: false }));
   }
 
   nextQuestion = async () => {
@@ -98,9 +97,9 @@ class MultipleChoices extends React.Component {
       history.push('/feedback');
     } else {
       this.wrongAnswerIndex = 0;
-      this.startTimer();
       await dispatch(nextQuestion());
       this.randomizeAnswersAndStartQuestion();
+      this.startTimer();
     }
   }
 
